@@ -432,7 +432,7 @@
 	}
 	.editContentWord{
 		position: relative;
-	    top: -55px;
+	    top: -5px;
 	}
 	.commentuserid{
 		outline: none !important;
