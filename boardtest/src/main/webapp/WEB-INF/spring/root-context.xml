@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- DataSource root-context는 객체선언이 bean not beans-->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+<!-- 		<property name="url" value="jdbc:oracle:thin:@localhost:51521:xe"></property> -->
+<!-- 		<property name="username" value="c##yun"></property> -->
+<!-- 		<property name="password" value="yun"></property> -->
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="c##bow"></property>
+		<property name="password" value="tiger"></property>
+	</bean>
+	
+	<!-- SqlSessionFactory 생성 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="typeAliases">
+			<list>
+				<value>com.boardtest.webapp.vo.PageVO</value>
+				<value>com.boardtest.webapp.vo.BoardVO</value>
+				<value>com.boardtest.webapp.vo.CommentVO</value>
+			</list>
+		</property>
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<property name="mapperLocations" value="classpath:/mapper/*Mapper.xml"></property>
+	</bean>	
+	
+	<mybatis-spring:scan base-package="com.boardtest.webapp.dao"/>
+</beans>
