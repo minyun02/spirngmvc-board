@@ -21,7 +21,7 @@
 	</select>
 	<select id="getTotalRecord" parameterType="PageVO" resultType="int">
 		select count(boardNo) totalRecord from boardprac
-		<if test="searchKey != null and searchWord != '' and searchWord != null and searchWord != ''">
+		<if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''">
 			where ${searchKey} like '%${searchWord}%'
 		</if>
 	</select>
@@ -83,5 +83,12 @@
 	</delete>
 	<select id="getTotalCommentNum" resultType="Integer">
 		select count(commentNo) from boardcomment where boardno=${param1}
+	</select>
+	<select id="getExcelList" resultType="BoardVO">
+		select * from
+		    (select boardno, subject, content, userid, hit, writedate, groupno, grouporder, indent from boardprac order by groupno desc, grouporder asc)
+		<if test="param1 != null and param1 != '' and param2 != null and param2 != ''">
+		where ${param1} like '%${param2}%'
+		</if>
 	</select>
 </mapper>

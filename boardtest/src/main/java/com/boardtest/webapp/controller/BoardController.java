@@ -1,9 +1,21 @@
 package com.boardtest.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
@@ -219,5 +231,101 @@ public class BoardController {
 		System.out.println("password=>"+cVo.getPassword());
 		
 		return boardService.commentEdit(cVo);
+	}
+	
+	//엑셀 다운로드
+	@RequestMapping(value="/excelDownload", method =RequestMethod.POST)
+	@ResponseBody
+	public void excelDownload(String searchWord, String searchKey, HttpServletResponse res) {
+		System.out.println(searchKey+"!!!!"+searchWord);
+		
+		List<BoardVO> excelList = boardService.getExcelList(searchKey, searchWord);
+		List<Integer> commentNum = new ArrayList<Integer>(); 
+		for(int i=0; i<excelList.size(); i++) {
+			commentNum.add(boardService.getCommentNum(excelList.get(i).getBoardNo()));
+		}
+		try {
+			//엑셀 워크북 생성
+			Workbook workbook = new HSSFWorkbook();
+			
+			//시트 생성
+			Sheet sheet = workbook.createSheet("게시판");
+			
+			//행, 열, 열번호
+			Row row = null;
+			Cell cell = null;
+			int rowNo = 0;
+			
+			//엑셀 테이블 헤더
+			CellStyle header = workbook.createCellStyle();
+			//배경 노란색
+			header.setFillBackgroundColor(HSSFColorPredefined.AQUA.getIndex());
+//			header.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			//데이터 테두리
+			CellStyle body = workbook.createCellStyle();
+			body.setBorderTop(BorderStyle.THIN);
+			body.setBorderRight(BorderStyle.THIN);
+			body.setBorderBottom(BorderStyle.THIN);
+			body.setBorderLeft(BorderStyle.THIN);
+			
+			//헤더 이름 설정
+			String[] headerArray = {"번호", "제목", "내용", "작성자", "댓글수", "조회수", "등록일"};
+			//헤더가 들어갈 로우 생성(1번째 로우)
+			row = sheet.createRow(rowNo++);
+			for(int i=0; i<headerArray.length; i++) {
+				cell = row.createCell(i);
+				cell.setCellStyle(header);
+				cell.setCellValue(headerArray[i]);
+			}
+			//body 넣어주기
+			for(int i=0; i<excelList.size();i++) {
+				//1. 번호 넣어주기
+				row = sheet.createRow(rowNo+i);
+				cell = row.createCell(0); // 첫번째 칼럼이니까 0
+				cell.setCellStyle(body); //
+				cell.setCellValue(excelList.get(i).getBoardNo()); 
+				rowNo = 1;
+				//2. 제목 넣어주기
+				cell = row.createCell(1); 
+				cell.setCellStyle(body);
+				cell.setCellValue(excelList.get(i).getSubject()); 
+				rowNo = 1;
+				//3. 내용 넣어주기
+				cell = row.createCell(2); 
+				cell.setCellStyle(body);
+				cell.setCellValue(excelList.get(i).getContent()); 
+				rowNo = 1;
+				//4. 작성자 넣어주기
+				cell = row.createCell(3); 
+				cell.setCellStyle(body);
+				cell.setCellValue(excelList.get(i).getUserid()); 
+				rowNo = 1;
+				//5. 댓글수 넣기
+				cell = row.createCell(4); 
+				cell.setCellStyle(body);
+				cell.setCellValue(commentNum.get(i)); 
+				rowNo = 1;
+				//6. 조회수 넣기
+				cell = row.createCell(5); 
+				cell.setCellStyle(body);
+				cell.setCellValue(excelList.get(i).getHit()); 
+				rowNo = 1;
+				//7. 등록일 넣기
+				cell = row.createCell(6);
+				cell.setCellStyle(body);
+				cell.setCellValue(excelList.get(i).getWritedate()); 
+				rowNo = 1;
+			}
+			
+			
+			//컨텐츠 타입과 파일명 지정
+			res.setContentType("ms-vnd/excel");
+			res.setHeader("Content-Disposition", "attachment; filename="+ java.net.URLEncoder.encode("게시판.xls", "UTF8"));
+			//엑셀 출력
+			workbook.write(res.getOutputStream());
+			workbook.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

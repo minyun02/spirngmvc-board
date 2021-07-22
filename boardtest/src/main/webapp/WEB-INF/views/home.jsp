@@ -13,8 +13,13 @@
 <script>
 	$(function(){
 		if(${page.totalRecord == 0}){
-			alert("검색 결과가 없습니다.");			
+			setTimeout(function(){
+				alert("검색 결과가 없습니다.");			
+			}, 100);
 		}
+		$(document).on('click', '#excelDownload', function(){
+			
+		});
 	});
 </script>
 <style>
@@ -24,9 +29,14 @@
 		padding: 0;
 		list-style: none;
 	}
-	#searchDiv, #boardList, #pagination{
+	#searchDiv, #boardList{
 		width: 1000px;
 		margin: 0 auto;
+	}
+	#pagination{
+		margin-left: 55px;
+		width: 850px;
+		float: left;
 	}
 	#searchDiv{
 		margin-bottom: 20px;
@@ -98,9 +108,12 @@
 <%-- 											총 레코드 수 - ((현재 페이지-1)* 한 페이지 레코드 ) --%>
 			<c:set var="recordNum" value="${totalRecord - ((page.currentPageNum-1) * page.onePageRecord)}"/>
 			<c:forEach var="vo" items="${list}" varStatus="idx">
-				
-				<li>${recordNum}</li>
-<%-- 				<li class="wordcut"><pre><a href="boardView?boardNo=${vo.boardNo}">${vo.subject}</a></pre></li> --%>
+				<c:if test="${vo.groupOrder==0}">
+					<li>${recordNum}</li>
+				</c:if>
+				<c:if test="${vo.groupOrder>0}">
+					<li>${recordNum+vo.groupOrder}-${vo.groupOrder}</li>
+				</c:if>
 				<li class="wordcut">
 				<c:forEach var="i" begin="1" end="${vo.indent}">
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -153,5 +166,12 @@
 			</c:if>			
 		</div>
 	</div>
+	<c:if test="${page.totalRecord != null && page.totalRecord != ''}">
+		<form action="/webapp/excelDownload" method="post">
+			<input type="hidden" name="searchKey" value="${page.searchKey}">
+			<input type="hidden" name="searchWord" value="${page.searchWord}">
+			<button id="excelDownload">엑셀로 다운 받기</button>
+		</form>
+	</c:if>
 </body>
 </html>

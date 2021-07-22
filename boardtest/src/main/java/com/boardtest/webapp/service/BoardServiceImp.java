@@ -131,4 +131,10 @@ public class BoardServiceImp implements BoardService {
 		return dao.getTotalCommentNum(boardNo);
 	}
 
+	@Override
+	public List<BoardVO> getExcelList(String searchKey, String searchWord) {
+		// 엑셀 다운로드 리스트 가져오기
+		return dao.getExcelList(searchKey, searchWord);
+	}
+
 }
