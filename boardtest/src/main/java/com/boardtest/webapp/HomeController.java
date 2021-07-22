@@ -38,8 +38,9 @@ public class HomeController {
 		System.out.println(order+"!!!!!!!!!!!!!!!");
 		List<Integer> groupOrder = new ArrayList<Integer>();
 		for(int i=0; i<list.size(); i++) {
-			groupOrder.add(list.get(order).getGroupOrder());
-			System.out.println(list.get(i).getBoardNo()+"= order->"+groupOrder.get(i).toString());
+//			groupOrder.add(list.get(order).getGroupOrder());
+//			System.out.println(list.get(i).getBoardNo()+"= order->"+groupOrder.get(i).toString());
+			System.out.println(list.get(i).getBoardNo()+"= order->"+list.get(order).getGroupOrder());
 			order--;
 		}
 		mav.addObject("totalRecord", pVo.getTotalRecord());

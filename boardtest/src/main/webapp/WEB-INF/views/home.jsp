@@ -107,19 +107,20 @@
 			
 <%-- 											총 레코드 수 - ((현재 페이지-1)* 한 페이지 레코드 ) --%>
 			<c:set var="recordNum" value="${totalRecord - ((page.currentPageNum-1) * page.onePageRecord)}"/>
+			<c:set var="no" value="${totalRecord-1}"/>
 			<c:forEach var="vo" items="${list}" varStatus="idx">
 				<c:if test="${vo.groupOrder==0}">
 					<li>${recordNum}</li>
 				</c:if>
 				<c:if test="${vo.groupOrder>0}">
-					<li>${recordNum+vo.groupOrder}-${vo.groupOrder}</li>
+					<li>${recordNum+vo.groupOrder}-${order[no]}</li>
 				</c:if>
 				<li class="wordcut">
 				<c:forEach var="i" begin="1" end="${vo.indent}">
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				</c:forEach>
 				<c:if test="${vo.indent>0}">
-					RE:&nbsp;
+					RE:&nbsp; ${no }
 				</c:if>
 				<a style="white-space: pre" href="boardView?boardNo=${vo.boardNo}&currentPage=1"> <c:out value="${vo.subject}" escapeXml="true"></c:out></a></li>
 				<li><span id="commentNum">&nbsp;${commentNum[idx.index]}</span></li>
@@ -127,6 +128,7 @@
 				<li>${vo.hit}</li>
 				<li>${vo.writedate}</li>
 				<c:set var="recordNum" value="${recordNum-1}"/>
+				<c:set var="no" value="${no-1}"/>
 			</c:forEach>	
 			
 		</ul>

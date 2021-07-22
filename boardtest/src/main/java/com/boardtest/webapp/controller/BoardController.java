@@ -278,12 +278,18 @@ public class BoardController {
 				cell.setCellValue(headerArray[i]);
 			}
 			//body 넣어주기
+			int num = excelList.size();
 			for(int i=0; i<excelList.size();i++) {
 				//1. 번호 넣어주기
 				row = sheet.createRow(rowNo+i);
 				cell = row.createCell(0); // 첫번째 칼럼이니까 0
 				cell.setCellStyle(body); //
-				cell.setCellValue(excelList.get(i).getBoardNo()); 
+//				cell.setCellValue(excelList.get(i).getBoardNo()); 
+				if(excelList.get(i).getGroupOrder() == 0) {
+					cell.setCellValue(num--); 
+				}else {
+					cell.setCellValue((num--)+excelList.get(i).getGroupOrder() +"-"+excelList.get(i).getGroupOrder());
+				}
 				rowNo = 1;
 				//2. 제목 넣어주기
 				cell = row.createCell(1); 
