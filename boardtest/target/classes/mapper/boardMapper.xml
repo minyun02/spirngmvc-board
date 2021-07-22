@@ -11,7 +11,7 @@
 		    (select * from
 		        (select * from 
 		            (select boardNo, subject, content, userid, hit, to_char(writedate, 'YYYY-MM-DD') writedate, 
-		            groupNo, groupOrder, indent from boardprac order by groupNo desc, groupOrder asc)
+		            groupNo, groupOrder, indent, state from boardprac where state='공개' order by groupNo desc, groupOrder asc)
 		        <if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''"> where ${searchKey} like '%${searchWord}%'</if>)
 		    where <![CDATA[rownum <=]]>${currentPageNum * onePageRecord} order by rownum desc)
 		where <![CDATA[rownum <=]]>
@@ -26,7 +26,7 @@
 		</if>
 	</select>
 	<select id="getSelectedRecord" resultType="BoardVO">
-		select boardNo, subject, content, userid, password, hit, filename, writedate from boardprac
+		select boardNo, subject, content, userid, password, hit, filename, writedate, state from boardprac
 		where boardNo = ${param1}
 	</select>
 	<select id="getPassword" resultType="String">
@@ -91,4 +91,7 @@
 		where ${param1} like '%${param2}%'
 		</if>
 	</select>
+	<update id="boardStateChange">
+		update boardprac set state='비공개' where boardno=${param1}
+	</update>
 </mapper>

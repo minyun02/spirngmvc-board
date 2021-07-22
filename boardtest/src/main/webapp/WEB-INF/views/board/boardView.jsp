@@ -480,27 +480,32 @@
 			<li>작성자 : <span><c:out value="${vo.userid}"></c:out></span><li>
 <%-- 			<li>파일 : ${vo.filename}</li> --%>
 			<li>제목</li>	
-			<li> <input id="subjectView" type="text" value="<c:out value="${vo.subject}"></c:out>" style="width: 1000px; height: 30px; line-height: 30px; border:1px solid; word-break:break-all;" readonly></li>
+			<li> 
+			
+			<input id="subjectView" type="text" value="<c:if test="${vo.state eq '공개'}"><c:out value="${vo.subject}"></c:out></c:if><c:if test="${vo.state eq '비공개'}">삭제된 글입니다</c:if>" style="width: 1000px; height: 30px; line-height: 30px; border:1px solid; word-break:break-all;" readonly></li>
 			<li>내용</li>
 			<li>
-			<textarea id="content" style="width: 1000px; height: 500px; border:1px solid; word-break:break-all; overflow: auto;"><c:out value="${vo.content}"></c:out></textarea>
+			<textarea id="content" style="width: 1000px; height: 500px; border:1px solid; word-break:break-all; overflow: auto;"><c:if test="${vo.state eq '공개'}"><c:out value="${vo.content}"></c:out></c:if><c:if test="${vo.state eq '비공개'}">해당 글은 본문이 삭제되었습니다.</c:if></textarea>
 <%-- 			<c:out value="${vo.content}"></c:out> --%>
 			</li>
 		</ul>
-		<a href="javascript:boardEdit()">수정</a>
-		<a href="javascript:boardDelete()">삭제</a>
-		<a href="replyWrite?boardNo=${vo.boardNo}">답글</a><br>
+		<c:if test="${vo.state eq '공개'}">
+			<a href="javascript:boardEdit()">수정</a>
+			<a href="javascript:boardDelete()">삭제</a>
+			<a href="replyWrite?boardNo=${vo.boardNo}">답글</a><br>
+		</c:if>
 		
-		<form id="commentForm" method="post">
-			<input type="hidden" name="boardNo" value="${vo.boardNo}">
-			작성자 : <input id="userid" type="text" name="userid" maxlength="5">
-			<span id="useridWord">0/5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			비밀번호 : <input id="password" type="password" name="password" maxlength="10">
-			<span id="pwdWord">0/10</span>
-			<textarea id="commentTextArea" name="content" rows="6" cols="130" maxlength="250"></textarea>
-			<input id="commentSubmit" type="submit" value="댓글작성">
-			<p id="contentWord">0/250</p>			
-		</form>
+			<form id="commentForm" method="post" <c:if test="${vo.state eq '비공개'}">style="display:none"</c:if>>
+				<input type="hidden" name="boardNo" value="${vo.boardNo}">
+				작성자 : <input id="userid" type="text" name="userid" maxlength="5">
+				<span id="useridWord">0/5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				비밀번호 : <input id="password" type="password" name="password" maxlength="10">
+				<span id="pwdWord">0/10</span>
+				<textarea id="commentTextArea" name="content" rows="6" cols="130" maxlength="250"></textarea>
+				<input id="commentSubmit" type="submit" value="댓글작성">
+				<p id="contentWord">0/250</p>			
+			</form>
+		
 		<h3>댓글</h3>
 		<div id="commentList"></div>
 		<div style="width: 1000px;">

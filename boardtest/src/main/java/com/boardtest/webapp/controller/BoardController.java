@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -12,7 +11,6 @@ import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -115,8 +113,9 @@ public class BoardController {
 		
 		ModelAndView mav = new ModelAndView();
 		try {
-			int deleteResult = boardService.boardDelete(boardNo);
-			boardService.childCommentDelete(boardNo);
+//			int deleteResult = boardService.boardDelete(boardNo);
+			int deleteResult = boardService.boardStateChange(boardNo); //글 삭제시 지우지말고 공개상태를 변경시키기 
+//			boardService.childCommentDelete(boardNo); // 글 삭제할때 자식 댓글도 지우기
 			if(deleteResult>0) {
 				mav.setViewName("redirect:/");
 				transactionManager.commit(status);

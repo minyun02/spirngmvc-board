@@ -137,4 +137,10 @@ public class BoardServiceImp implements BoardService {
 		return dao.getExcelList(searchKey, searchWord);
 	}
 
+	@Override
+	public int boardStateChange(int boardNo) {
+		// 글 삭제시 공개여부 바꾸기
+		return dao.boardStateChange(boardNo);
+	}
+
 }

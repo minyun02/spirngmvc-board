@@ -28,4 +28,6 @@ public interface BoardService {
 	public Integer childCommentDelete(int boardNo);
 	public Integer getTotalCommentNum(int boardNo);
 	public List<BoardVO> getExcelList(String searchKey, String searchWord);
+	
+	public int boardStateChange(int boardNo);
 }

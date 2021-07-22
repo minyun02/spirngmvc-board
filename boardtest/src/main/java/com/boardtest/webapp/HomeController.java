@@ -26,7 +26,7 @@ public class HomeController {
 		pVo.setTotalRecord(boardService.getTotalRecord(pVo));
 		
 		List<BoardVO> list = boardService.getList(pVo);
-		
+		System.out.println(list.get(0).getState()+"!!!@#@!#@!#!@#@!#!@#@!#@!!!!!!!!!!!!!");
 		//댓글수 저장하기
 		List<Integer> commentNum = new ArrayList<Integer>(); 
 		for(int i=0; i<list.size(); i++) {

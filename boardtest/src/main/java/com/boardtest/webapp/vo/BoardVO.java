@@ -9,6 +9,7 @@ public class BoardVO {
 	private int hit;
 	private String filename;
 	private String writedate;
+	private String state;
 	
 	//답변
 	private int groupNo;
@@ -80,5 +81,11 @@ public class BoardVO {
 	}
 	public void setIndent(int indent) {
 		this.indent = indent;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 }
