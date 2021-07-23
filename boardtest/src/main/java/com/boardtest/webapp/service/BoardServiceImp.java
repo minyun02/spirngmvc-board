@@ -143,4 +143,10 @@ public class BoardServiceImp implements BoardService {
 		return dao.boardStateChange(boardNo);
 	}
 
+	@Override
+	public int getReplyCount(int boardNo) {
+		// 답글이 있는지 체크
+		return dao.getReplyCount(boardNo);
+	}
+
 }

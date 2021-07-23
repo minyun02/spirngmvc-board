@@ -16,6 +16,8 @@ public class BoardVO {
 	private int groupOrder;
 	private int indent;
 	
+	private int groupCount;
+	
 	public Integer getBoardNo() {
 		return boardNo;
 	}
@@ -87,5 +89,11 @@ public class BoardVO {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	public int getGroupCount() {
+		return groupCount;
+	}
+	public void setGroupCount(int groupCount) {
+		this.groupCount = groupCount;
 	}
 }

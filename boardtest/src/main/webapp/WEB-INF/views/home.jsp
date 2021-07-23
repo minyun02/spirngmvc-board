@@ -17,9 +17,8 @@
 				alert("검색 결과가 없습니다.");			
 			}, 100);
 		}
-		$(document).on('click', '#excelDownload', function(){
-			
-		});
+	
+		
 	});
 </script>
 <style>
@@ -107,14 +106,29 @@
 			
 <%-- 											총 레코드 수 - ((현재 페이지-1)* 한 페이지 레코드 ) --%>
 			<c:set var="recordNum" value="${totalRecord - ((page.currentPageNum-1) * page.onePageRecord)}"/>
-			<c:set var="no" value="${totalRecord-1}"/>
 			<c:forEach var="vo" items="${list}" varStatus="idx">
-				<c:if test="${vo.groupOrder==0}">
-					<li>${recordNum}</li>
-				</c:if>
-				<c:if test="${vo.groupOrder>0}">
-					<li>${recordNum+vo.groupOrder}-${order[no]}</li>
-				</c:if>
+<%-- 				<c:if test="${vo.groupOrder==0}"> --%>
+<%-- 					<c:if test="${idx.index == 0}"> --%>
+<%-- 						<li>${recordNum}</li> --%>
+<%-- 					</c:if> --%>
+<%-- 					<c:if test="${idx.index != 0}"> --%>
+<%-- 						<li>${recordNum+1}</li> --%>
+<%-- 					</c:if> --%>
+<%-- 				</c:if> --%>
+<%-- 				<c:if test="${vo.groupOrder>0}"> --%>
+<%-- 					<c:if test="${empty page.searchKey}"><li>${recordNum+vo.groupOrder}-${vo.groupOrder}</li></c:if> --%>
+<%-- 					<c:if test="${not empty page.searchKey}"><li>${recordNum}</li></c:if> --%>
+<%-- 				</c:if> --%>
+				
+				<li class="${vo.groupNo}">${recordNum}</li>
+				
+<!-- 			// grouporder가 0이면 원글이니까 recordNum을 보여준다-->
+<%-- 				<c:if test="${vo.groupOrder == 0}"><li>${recordNum}</li></c:if> --%>
+<!-- 				// groupOrder가 0보다 크면 답글이니까 원글 recordNum에 '-'를 추가하고 순번이 나온다 -->
+<%-- <%-- 				<c:if test="${vo.indent == 1}"><li>${recordNum+vo.groupOrder}-${vo.groupOrder}</li></c:if> --%>
+<%-- 				<c:if test="${vo.indent > 1}"><li>${recordNum+vo.groupOrder}-${vo.groupOrder-vo.indent+1}-${vo.indent-1}</li></c:if> --%>
+
+
 				<li class="wordcut">
 				<c:forEach var="i" begin="1" end="${vo.indent}">
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -129,7 +143,6 @@
 				<li>${vo.hit}</li>
 				<li>${vo.writedate}</li>
 				<c:set var="recordNum" value="${recordNum-1}"/>
-				<c:set var="no" value="${no-1}"/>
 			</c:forEach>	
 			
 		</ul>

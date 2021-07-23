@@ -30,5 +30,6 @@ public interface BoardDAO {
 	public List<BoardVO> getExcelList(String searchKey, String searchWord);
 	
 	public int boardStateChange(int boardNo);
+	public int getReplyCount(int boardNo);
 	
 }

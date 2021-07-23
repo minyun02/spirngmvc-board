@@ -113,8 +113,11 @@ public class BoardController {
 		
 		ModelAndView mav = new ModelAndView();
 		try {
+			//답글이 있는지를 확인한다 
+			int replyCount = boardService.getReplyCount(boardNo);
 //			int deleteResult = boardService.boardDelete(boardNo);
 			int deleteResult = boardService.boardStateChange(boardNo); //글 삭제시 지우지말고 공개상태를 변경시키기 
+			System.out.println(deleteResult+"!@#!#@!#!@#!@@#!");
 //			boardService.childCommentDelete(boardNo); // 글 삭제할때 자식 댓글도 지우기
 			if(deleteResult>0) {
 				mav.setViewName("redirect:/");

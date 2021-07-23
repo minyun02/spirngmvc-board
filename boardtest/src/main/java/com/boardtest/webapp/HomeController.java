@@ -26,7 +26,7 @@ public class HomeController {
 		pVo.setTotalRecord(boardService.getTotalRecord(pVo));
 		
 		List<BoardVO> list = boardService.getList(pVo);
-		System.out.println(list.get(0).getState()+"!!!@#@!#@!#!@#@!#!@#@!#@!!!!!!!!!!!!!");
+//		System.out.println(list.get(0).getState()+"!!!@#@!#@!#!@#@!#!@#@!#@!!!!!!!!!!!!!");
 		//댓글수 저장하기
 		List<Integer> commentNum = new ArrayList<Integer>(); 
 		for(int i=0; i<list.size(); i++) {
@@ -38,15 +38,12 @@ public class HomeController {
 		System.out.println(order+"!!!!!!!!!!!!!!!");
 		List<Integer> groupOrder = new ArrayList<Integer>();
 		for(int i=0; i<list.size(); i++) {
-//			groupOrder.add(list.get(order).getGroupOrder());
-//			System.out.println(list.get(i).getBoardNo()+"= order->"+groupOrder.get(i).toString());
-			System.out.println(list.get(i).getBoardNo()+"= order->"+list.get(order).getGroupOrder());
+			groupOrder.add(list.get(order).getGroupOrder());
 			order--;
 		}
 		mav.addObject("totalRecord", pVo.getTotalRecord());
 		mav.addObject("list", list);
 		mav.addObject("commentNum", commentNum);
-		mav.addObject("order",groupOrder);
 		mav.addObject("page", pVo);
 		mav.setViewName("home");
 		

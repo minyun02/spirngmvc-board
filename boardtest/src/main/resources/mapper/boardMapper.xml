@@ -11,8 +11,8 @@
 		    (select * from
 		        (select * from 
 		            (select boardNo, subject, content, userid, hit, to_char(writedate, 'YYYY-MM-DD') writedate, 
-		            groupNo, groupOrder, indent, state from boardprac where state='공개' order by groupNo desc, groupOrder asc)
-		        <if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''"> where ${searchKey} like '%${searchWord}%'</if>)
+		            groupNo, groupOrder, indent, state from boardprac order by groupNo desc, groupOrder asc)
+		        <if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''"> where ${searchKey} like '%${searchWord}%' and state='공개'</if>)
 		    where <![CDATA[rownum <=]]>${currentPageNum * onePageRecord} order by rownum desc)
 		where <![CDATA[rownum <=]]>
 		<if test="currentPageNum==totalPage">${lastPageRecord}</if>
@@ -22,7 +22,7 @@
 	<select id="getTotalRecord" parameterType="PageVO" resultType="int">
 		select count(boardNo) totalRecord from boardprac
 		<if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''">
-			where ${searchKey} like '%${searchWord}%'
+			where ${searchKey} like '%${searchWord}%' and state='공개'
 		</if>
 	</select>
 	<select id="getSelectedRecord" resultType="BoardVO">
@@ -94,4 +94,7 @@
 	<update id="boardStateChange">
 		update boardprac set state='비공개' where boardno=${param1}
 	</update>
+	<select id="getReplyCount" resultType="int">
+		select count(groupno) from boardprac where boardno = ${param1}
+	</select>
 </mapper>

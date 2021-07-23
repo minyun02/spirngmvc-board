@@ -30,4 +30,5 @@ public interface BoardService {
 	public List<BoardVO> getExcelList(String searchKey, String searchWord);
 	
 	public int boardStateChange(int boardNo);
+	public int getReplyCount(int boardNo);
 }
