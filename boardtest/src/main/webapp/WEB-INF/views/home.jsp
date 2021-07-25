@@ -17,8 +17,12 @@
 				alert("검색 결과가 없습니다.");			
 			}, 100);
 		}
-	
 		
+		<c:forEach items="${list}" var="item">
+			var color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
+			$('.${item.groupNo}').css('color',color);
+			$('.${item.groupNo}').css('font-weight', 'bold');
+		</c:forEach>
 	});
 </script>
 <style>
