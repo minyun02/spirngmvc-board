@@ -60,7 +60,7 @@ public class BoardController {
 	@RequestMapping(value="/boardWriteOk", method = RequestMethod.POST)
 	public ModelAndView boardWriteOk(BoardVO vo) {
 		ModelAndView mav = new ModelAndView();
-		
+		System.out.println(vo.getSubject()+"?????????????????????????????????");
 		int result = boardService.boardInsert(vo);
 		if(result > 0) { //글 등록 성공
 			mav.setViewName("redirect:/");

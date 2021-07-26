@@ -11,6 +11,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
+	var color = "";
+	var num = 0;
+	function setColor(){
+		color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
+		return color;
+	}
+	function firstPage(){
+		alert(color)
+		alert(num)
+		var url = "/webapp/?currnetPageNum=1<c:if test="${page.searchWord != null && page.searchWord != ''}">&searchKey=${page.searchKey}&searchWord=${page.searchWord}</c:if>&prev="+color+"&lastNum="+num;
+		location.href = url;
+	}
 	$(function(){
 		if(${page.totalRecord == 0}){
 			setTimeout(function(){
@@ -19,14 +31,15 @@
 		}
 		
 		<c:forEach items="${list}" var="item">
-			var color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
-			var num = ${item.groupNo}
-			var hex = "#" + num.toString(16);
-			
+			color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
+			num = ${item.groupNo}
+// 			$('.${item.groupNo}').css('color', setColor());
 			$('.${item.groupNo}').css('color', color);
 			$('.${item.groupNo}').css('font-weight', 'bold');
 		</c:forEach>
-		console.log(hex)
+		
+		console.log(color)
+		console.log(num)
 	});
 </script>
 <style>
@@ -158,7 +171,8 @@
 			<c:if test="${page.totalRecord != null && page.totalRecord != ''}"><!-- 레코드가 없으면 첫페이지랑 < 안나와야한다 -->
 
 				<c:if test="${page.currentPageNum!=1}"><!--1페이지가 아닐때만 첫페이지 버튼이 필요하다 -->
-					<a href="/webapp/?currnetPageNum=1<c:if test="${page.searchWord != null && page.searchWord != ''}">&searchKey=${page.searchKey}&searchWord=${page.searchWord}</c:if>">첫페이지</a>
+<%-- 					<a href="/webapp/?currnetPageNum=1<c:if test="${page.searchWord != null && page.searchWord != ''}">&searchKey=${page.searchKey}&searchWord=${page.searchWord}</c:if>">첫페이지</a> --%>
+					<a href="" onclick="firstPage(); return false;">첫페이지</a>
 				</c:if>
 					
 				<c:if test="${page.startPageNum!=1}"><!-- 시작페이지가 1이면 첫 페이지 세트이기때문에 페이지세트 이동 버튼이 필요없다 -->

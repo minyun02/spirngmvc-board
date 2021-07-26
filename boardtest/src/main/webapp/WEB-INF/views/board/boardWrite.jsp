@@ -213,7 +213,7 @@
 	<div id="container">
 		<h1>글작성</h1>
 		<h3><a id="list" href="/webapp/">목록</a></h3>
-		<form action="boardWriteOk" method="post" id="writeForm" name="myform">
+		<form action="boardWriteOk" method="post" id="writeForm" name="myform" enctype="multipart/form-data">
 			<ul>
 				<li>제목 : <input id="subject" type="text" name="subject" maxlength="100" required><span id="subjectWord">0/100</span><span id="blankCheck">제목에 공백만 입력할 수 없습니다.</span></li>
 				<li>작성자 : <input id="userid" type="text" name="userid" maxlength="5" required><span id="idWord">0/5</span><span id="blankCheckUserid">작성자명에 공백만 입력할 수 없습니다.</span></li>

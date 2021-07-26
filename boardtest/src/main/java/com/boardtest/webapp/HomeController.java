@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,10 @@ public class HomeController {
 	
 //	@RequestMapping(value = {"/", "list"}, method = RequestMethod.GET)
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home(PageVO pVo) {
+	public ModelAndView home(PageVO pVo, HttpServletRequest req) {
 		ModelAndView mav = new ModelAndView();
+		System.out.println(req.getParameter("prev")+"/////////////////"+req.getParameter("lastNum"));
+		System.out.println(pVo.getCurrentPageNum()+"!!!!!!!!!!!!");
 		pVo.setTotalRecord(boardService.getTotalRecord(pVo));
 		
 		List<BoardVO> list = boardService.getList(pVo);
@@ -43,7 +46,7 @@ public class HomeController {
 		
 		//groupOrder 받아와서 게시글 정렬에 이용해야해서 역순으로 담아주기
 		int order = list.size()-1;
-		System.out.println(order+"!!!!!!!!!!!!!!!");
+//		System.out.println(order+"!!!!!!!!!!!!!!!");
 		List<Integer> groupOrder = new ArrayList<Integer>();
 		for(int i=0; i<list.size(); i++) {
 			groupOrder.add(list.get(order).getGroupOrder());
