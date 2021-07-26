@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.boardtest.webapp.service.BoardService;
@@ -31,7 +32,7 @@ public class HomeController {
 		int groupNo[] = new int[list.size()];
 		for(int i=0; i<list.size(); i++) {
 			groupNo[i] = list.get(i).getGroupNo();
-			System.out.println("groupNo["+i+"]=>>"+groupNo[i]);
+//			System.out.println("groupNo["+i+"]=>>"+groupNo[i]);
 		}
 
 		//댓글수 저장하기

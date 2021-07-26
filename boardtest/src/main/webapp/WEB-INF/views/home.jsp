@@ -20,9 +20,13 @@
 		
 		<c:forEach items="${list}" var="item">
 			var color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
-			$('.${item.groupNo}').css('color',color);
+			var num = ${item.groupNo}
+			var hex = "#" + num.toString(16);
+			
+			$('.${item.groupNo}').css('color', color);
 			$('.${item.groupNo}').css('font-weight', 'bold');
 		</c:forEach>
+		console.log(hex)
 	});
 </script>
 <style>

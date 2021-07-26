@@ -287,11 +287,11 @@ public class BoardController {
 				cell = row.createCell(0); // 첫번째 칼럼이니까 0
 				cell.setCellStyle(body); //
 //				cell.setCellValue(excelList.get(i).getBoardNo()); 
-				if(excelList.get(i).getGroupOrder() == 0) {
+//				if(excelList.get(i).getGroupOrder() == 0) {
 					cell.setCellValue(num--); 
-				}else {
-					cell.setCellValue((num--)+excelList.get(i).getGroupOrder() +"-"+excelList.get(i).getGroupOrder());
-				}
+//				}else {
+//					cell.setCellValue((num--)+excelList.get(i).getGroupOrder() +"-"+excelList.get(i).getGroupOrder());
+//				}
 				rowNo = 1;
 				//2. 제목 넣어주기
 				cell = row.createCell(1); 
