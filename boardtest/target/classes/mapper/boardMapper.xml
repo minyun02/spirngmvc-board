@@ -3,8 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.boardtest.webapp.dao.BoardDAO">
 	<insert id="boardInsert" parameterType="com.boardtest.webapp.vo.BoardVO">
-		insert into boardprac(boardNo, subject, content, userid, password, groupNo) 
-		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, testsq.currval)
+		insert into boardprac(boardNo, subject, content, userid, password, groupNo, filename) 
+		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, testsq.currval, #{filename})
 	</insert>
 	<select id="getList" parameterType="PageVO" resultType="BoardVO">
 		select * from

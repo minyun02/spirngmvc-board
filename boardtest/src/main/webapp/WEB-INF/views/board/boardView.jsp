@@ -488,7 +488,12 @@
 			<textarea id="content" style="width: 1000px; height: 500px; border:1px solid; word-break:break-all; overflow: auto;"><c:if test="${vo.state eq '공개'}"><c:out value="${vo.content}"></c:out></c:if><c:if test="${vo.state eq '비공개'}">해당 글은 본문이 삭제되었습니다.</c:if></textarea>
 <%-- 			<c:out value="${vo.content}"></c:out> --%>
 			</li>
-		</ul>
+			<li>다운로드 파일 : <br>
+				<c:forEach var="file" items="${file}" varStatus="idx">
+					<a href="/webapp/upload/${file}" download>${file}</a><br>
+				</c:forEach>
+			</li>
+		</ul><br>
 		<c:if test="${vo.state eq '공개'}">
 			<a href="javascript:boardEdit()">수정</a>
 			<a href="javascript:boardDelete()">삭제</a>

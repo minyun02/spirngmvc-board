@@ -227,6 +227,7 @@
 					<textarea name="content" id="content"></textarea>
 	<!-- 				<br><span id="contentCheck"></span> -->
 				</li>
+				<li><input type="file" multiple="multiple" name="file"/></li>
 				<li>
 					<input type="submit" value="등록">
 	<!-- 				<input type="reset" value="reset"> -->

@@ -18,8 +18,8 @@
 		return color;
 	}
 	function firstPage(){
-		alert(color)
-		alert(num)
+// 		alert(color)
+// 		alert(num)
 		var url = "/webapp/?currnetPageNum=1<c:if test="${page.searchWord != null && page.searchWord != ''}">&searchKey=${page.searchKey}&searchWord=${page.searchWord}</c:if>&prev="+color+"&lastNum="+num;
 		location.href = url;
 	}

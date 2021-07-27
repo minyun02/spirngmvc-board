@@ -1,9 +1,12 @@
 package com.boardtest.webapp.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,6 +26,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.boardtest.webapp.service.BoardService;
@@ -40,13 +45,18 @@ public class BoardController {
 	private DataSourceTransactionManager transactionManager;
 	
 	@RequestMapping("/boardView")
-	public ModelAndView boardView(int boardNo, int currentPage, CommentPageVO cpVo) {
+	public ModelAndView boardView(int boardNo, int currentPage, CommentPageVO cpVo, HttpServletRequest req) {
 		ModelAndView mav = new ModelAndView();
 		boardService.updateHit(boardNo);
 		cpVo.setTotalCommentNum(boardService.getTotalCommentNum(boardNo));
-		
-		System.out.println(currentPage+"<--page");
-		mav.addObject("vo", boardService.getSelectedRecord(boardNo));
+		BoardVO vo = boardService.getSelectedRecord(boardNo);
+		//파일 이름을 나눠준다
+		StringTokenizer st = new StringTokenizer(vo.getFilename(), "/");
+		String path = req.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+		System.out.println("path==>"+path);
+//		System.out.println(currentPage+"<--page");
+		mav.addObject("file", st);
+		mav.addObject("vo", vo);
 		mav.addObject("cPage", cpVo);
 		mav.setViewName("/board/boardView");
 		return mav;
@@ -58,9 +68,58 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/boardWriteOk", method = RequestMethod.POST)
-	public ModelAndView boardWriteOk(BoardVO vo) {
+	public ModelAndView boardWriteOk(BoardVO vo, HttpServletRequest req) {
+		//파일 저장 위치 잡아주기
+		String path = req.getSession().getServletContext().getRealPath("/upload");
+//		String path = "C:\\Users\\min\\git\\spirngmvc-board\\boardtest\\src\\main\\webapp\\upload";
+		//파일 업로드를 위해서 multiparthttp객체로 변환해준다
+		MultipartHttpServletRequest mr = (MultipartHttpServletRequest) req;
+		
+		//mr에서 업로드할 파일 목록을 구한다.
+		List<MultipartFile> files = mr.getFiles("file");
+		
+		//올라간 파일 이름을 담을 리스트(db에 넣을용)
+		List<String> uploadToDB = new ArrayList<String>(); //for문 밖에서 선언
+		if(!files.isEmpty()) {//첨부 파일이 있으면
+			for(MultipartFile mf : files) { //파일수만큰 반복
+				String originalFilename = mf.getOriginalFilename(); //파일의 이름을 받아줄 변수
+				if(!originalFilename.equals("")) { //파일이름이 비어있지않으면 업로드한다
+					File f = new File(path, originalFilename); //저장위치와 파일이름을 File 객체화시킨다
+					int i = 1;
+					while(f.exists()) {//중복파일 검사
+						int point = originalFilename.lastIndexOf(".");
+						String name = originalFilename.substring(0, point); //파일명
+						String extName = originalFilename.substring(point+1); //확장자
+						
+						f = new File(path, name+"_"+ i++ +"."+extName);
+						
+					}//while
+					
+					//업로드 시키기
+					try {
+						mf.transferTo(f);
+					}catch(Exception e) {
+						System.out.println("파일 업로드 실패...");
+						e.printStackTrace();
+					}
+					//원본파일 이름 혹은 중복으로 인해 변경된 파일명을 담아준다
+					uploadToDB.add(f.getName());//파일의 이름만 담아주면 된다.
+				}//if
+			}//for
+		}//if
+		
+		//데이터베이스에 이름 넣어주기
+		//1. 여러개의 파일명을 하나의 String으로 만들어주어야한다
+		String filename = "";
+		for(int i=0; i<uploadToDB.size(); i++) {
+			filename = filename + uploadToDB.get(i)+"/";
+		}
+		vo.setFilename(filename);
+		System.out.println(vo.getFilename()+"filename~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		///////////////////////////////////////////////////////
 		ModelAndView mav = new ModelAndView();
-		System.out.println(vo.getSubject()+"?????????????????????????????????");
+//		System.out.println(vo.getSubject()+"?????????????????????????????????");
 		int result = boardService.boardInsert(vo);
 		if(result > 0) { //글 등록 성공
 			mav.setViewName("redirect:/");

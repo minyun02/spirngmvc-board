@@ -1,5 +1,7 @@
 package com.boardtest.webapp.vo;
 
+import java.util.List;
+
 public class BoardVO {
 	private Integer boardNo;
 	private String subject;
