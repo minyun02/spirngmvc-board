@@ -149,4 +149,10 @@ public class BoardServiceImp implements BoardService {
 		return dao.getReplyCount(boardNo);
 	}
 
+	@Override
+	public int colorCheck(String rgb) {
+		// 색상 중복여부 체크
+		return dao.colorCheck(rgb);
+	}
+
 }

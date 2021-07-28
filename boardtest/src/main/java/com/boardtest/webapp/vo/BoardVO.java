@@ -1,7 +1,5 @@
 package com.boardtest.webapp.vo;
 
-import java.util.List;
-
 public class BoardVO {
 	private Integer boardNo;
 	private String subject;
@@ -19,6 +17,7 @@ public class BoardVO {
 	private int indent;
 	
 	private int groupCount;
+	private String color;
 	
 	public Integer getBoardNo() {
 		return boardNo;
@@ -97,5 +96,11 @@ public class BoardVO {
 	}
 	public void setGroupCount(int groupCount) {
 		this.groupCount = groupCount;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
 	}
 }

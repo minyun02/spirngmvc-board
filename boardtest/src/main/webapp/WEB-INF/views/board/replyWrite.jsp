@@ -177,7 +177,7 @@
 	<div id="container">
 		<h1>답글 작성</h1>
 		<h3><a id="list" href="/webapp/">목록</a></h3>
-		<form action="replyWriteOk" method="post" id="writeForm" name="myform">
+		<form action="replyWriteOk" method="post" id="writeForm" name="myform" enctype="multipart/form-data">
 			<input type="hidden" name="boardNo" value="${boardNo}">
 			<ul>
 				<li>제목 : <input id="subject" type="text" name="subject" maxlength="100" required><span id="subjectWord">0/100</span><span id="blankCheck">제목에 공백만 입력할 수 없습니다.</span></li>
@@ -192,6 +192,7 @@
 					<textarea name="content" id="content"></textarea>
 	<!-- 				<br><span id="contentCheck"></span> -->
 				</li>
+				<li><input type="file" multiple="multiple" name="file"/></li>
 				<li>
 					<input type="submit" value="답글 등록">
 	<!-- 				<input type="reset" value="reset"> -->

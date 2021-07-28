@@ -3,6 +3,7 @@ package com.boardtest.webapp.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
@@ -50,12 +51,14 @@ public class BoardController {
 		boardService.updateHit(boardNo);
 		cpVo.setTotalCommentNum(boardService.getTotalCommentNum(boardNo));
 		BoardVO vo = boardService.getSelectedRecord(boardNo);
-		//파일 이름을 나눠준다
-		StringTokenizer st = new StringTokenizer(vo.getFilename(), "/");
-		String path = req.getSession().getServletContext().getRealPath("/WEB-INF/upload");
-		System.out.println("path==>"+path);
+		if(vo.getFilename() != null) {
+			//파일 이름을 나눠준다
+			StringTokenizer st = new StringTokenizer(vo.getFilename(), "/");
+			String path = req.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+			System.out.println("path==>"+path);
+			mav.addObject("file", st);
+		}
 //		System.out.println(currentPage+"<--page");
-		mav.addObject("file", st);
 		mav.addObject("vo", vo);
 		mav.addObject("cPage", cpVo);
 		mav.setViewName("/board/boardView");
@@ -117,6 +120,18 @@ public class BoardController {
 		vo.setFilename(filename);
 		System.out.println(vo.getFilename()+"filename~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
+		//고유색 정해주기
+		Random r = new Random();
+		String rgb = r.nextInt(256)+","+r.nextInt(256)+","+r.nextInt(256);
+		//중복 색이 아니면 세팅
+		int colorCheck = boardService.colorCheck(rgb);
+		while(colorCheck!=0) { //0이랑 같지 않으면 중복이니까 다시 색 추출
+			rgb = r.nextInt(256)+","+r.nextInt(256)+","+r.nextInt(256); 
+			colorCheck = boardService.colorCheck(rgb);
+		}
+		vo.setColor(rgb);
+		System.out.println(rgb+"색상;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+		
 		///////////////////////////////////////////////////////
 		ModelAndView mav = new ModelAndView();
 //		System.out.println(vo.getSubject()+"?????????????????????????????????");
@@ -143,8 +158,14 @@ public class BoardController {
 	@RequestMapping("/boardEdit")
 	public ModelAndView boardEdit(int boardNo) {
 		ModelAndView mav = new ModelAndView();
-		
-		mav.addObject("vo", boardService.getSelectedRecord(boardNo));
+		BoardVO vo = boardService.getSelectedRecord(boardNo);
+
+		if(vo.getFilename() != null) {
+			//파일 이름을 나눠준다
+			StringTokenizer st = new StringTokenizer(vo.getFilename(), "/");
+			mav.addObject("file", st);
+		}
+		mav.addObject("vo", vo);
 		mav.setViewName("/board/boardEdit");
 		return mav;
 	}
@@ -207,7 +228,7 @@ public class BoardController {
 	//답글 쓰기
 	@RequestMapping(value =  "/replyWriteOk", method = RequestMethod.POST)
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-	public ModelAndView replyWriteOk(BoardVO vo) {
+	public ModelAndView replyWriteOk(BoardVO vo, HttpServletRequest req) {
 		//트랜잭션 객체 생성
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(DefaultTransactionDefinition.PROPAGATION_REQUIRED);
@@ -216,11 +237,51 @@ public class BoardController {
 		
 		ModelAndView mav = new ModelAndView();
 		try {
+			////////////////////////////////////////////////////////////////
+			//답글 파일업로드
+			String path = req.getSession().getServletContext().getRealPath("/upload");
+			
+			MultipartHttpServletRequest mr = (MultipartHttpServletRequest) req;
+			
+			List<MultipartFile> files = mr.getFiles("file");
+			List<String> uploadToDB = new ArrayList<String>();
+			if(!files.isEmpty()) {
+				for(MultipartFile mf : files) {
+					String originalFilename = mf.getOriginalFilename();
+					if(!originalFilename.equals("")) {
+						File f = new File(path, originalFilename);
+						int i = 1;
+						while(f.exists()) {
+							int point = originalFilename.lastIndexOf(".");
+							String name = originalFilename.substring(0, point);
+							String extName = originalFilename.substring(point+1);
+							
+							f = new File(path, name+"_"+ i++ +"."+extName);
+						}//while
+						//업로드 시키기
+						try {
+							mf.transferTo(f);
+						}catch(Exception e) {
+							System.out.println("답글 파일 업로드 실패");
+							e.printStackTrace();
+						}
+						//파일 이름 담기
+						uploadToDB.add(f.getName());
+					}// if
+					
+				}// for
+			}//if
+			
+			//리스트에 넣은 파일 이름 데이터베이스에 넣어주기
+			//1. 여러개의 파일명을 하나의 String으로 만들어주어야한다
+			String filename = "";
+			for(int i=0; i<uploadToDB.size(); i++) {
+				filename = filename + uploadToDB.get(i)+"/";
+			}
+			vo.setFilename(filename);
+			////////////////////////////////////////////////////////////////
 			//1. 원글의 정보 가져오기
 			BoardVO oriVo = boardService.getOriInfo(vo.getBoardNo());
-			System.out.println(oriVo.getGroupNo()+"groupno");
-			System.out.println(oriVo.getGroupOrder()+"grouporder");
-			System.out.println(oriVo.getIndent()+"indent");
 			//2. 해당 답글에 정보 추가
 			int indentCnt = boardService.indentCount(oriVo);
 			//2-1 원글번호를 그룹번호 넣어줌
@@ -229,6 +290,8 @@ public class BoardController {
 			vo.setGroupOrder(oriVo.getGroupOrder()+1);
 			//2-3 들여쓰기 정해주기
 			vo.setIndent(oriVo.getIndent()+1);
+			//2-4 원글의 고유색 넣어주기
+			vo.setColor(oriVo.getColor());
 			
 			//답글 등록 메서드
 			int replyInsert = boardService.replyInsert(vo);
@@ -330,7 +393,7 @@ public class BoardController {
 			body.setBorderLeft(BorderStyle.THIN);
 			
 			//헤더 이름 설정
-			String[] headerArray = {"번호", "제목", "내용", "작성자", "댓글수", "조회수", "등록일"};
+			String[] headerArray = {"번호", "제목", "댓글", "글쓴이", "조회수", "등록일"};
 			//헤더가 들어갈 로우 생성(1번째 로우)
 			row = sheet.createRow(rowNo++);
 			for(int i=0; i<headerArray.length; i++) {
@@ -357,28 +420,31 @@ public class BoardController {
 				cell.setCellStyle(body);
 				cell.setCellValue(excelList.get(i).getSubject()); 
 				rowNo = 1;
-				//3. 내용 넣어주기
+				
+//				//3. 내용 넣어주기
+//				cell = row.createCell(2); 
+//				cell.setCellStyle(body);
+//				cell.setCellValue(excelList.get(i).getContent()); 
+//				rowNo = 1;
+				
+				
+				//3. 댓글 넣어주기
 				cell = row.createCell(2); 
 				cell.setCellStyle(body);
-				cell.setCellValue(excelList.get(i).getContent()); 
+				cell.setCellValue(commentNum.get(i)); 
 				rowNo = 1;
-				//4. 작성자 넣어주기
+				//4. 글쓴이 넣기
 				cell = row.createCell(3); 
 				cell.setCellStyle(body);
 				cell.setCellValue(excelList.get(i).getUserid()); 
 				rowNo = 1;
-				//5. 댓글수 넣기
+				//6. 조회수 넣기
 				cell = row.createCell(4); 
 				cell.setCellStyle(body);
-				cell.setCellValue(commentNum.get(i)); 
-				rowNo = 1;
-				//6. 조회수 넣기
-				cell = row.createCell(5); 
-				cell.setCellStyle(body);
-				cell.setCellValue(excelList.get(i).getHit()); 
+				cell.setCellValue(excelList.get(i).getHit());
 				rowNo = 1;
 				//7. 등록일 넣기
-				cell = row.createCell(6);
+				cell = row.createCell(5);
 				cell.setCellStyle(body);
 				cell.setCellValue(excelList.get(i).getWritedate()); 
 				rowNo = 1;

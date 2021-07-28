@@ -30,16 +30,16 @@
 			}, 100);
 		}
 		
-		<c:forEach items="${list}" var="item">
-			color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
-			num = ${item.groupNo}
-// 			$('.${item.groupNo}').css('color', setColor());
-			$('.${item.groupNo}').css('color', color);
-			$('.${item.groupNo}').css('font-weight', 'bold');
-		</c:forEach>
+// 		<c:forEach items="${list}" var="item">
+// 			color = "#" + Math.round(Math.random() * 0xffffff).toString(16);
+// 			num = ${item.groupNo}
+// // 			$('.${item.groupNo}').css('color', setColor());
+// 			$('.${item.groupNo}').css('color', color);
+// 			$('.${item.groupNo}').css('font-weight', 'bold');
+// 		</c:forEach>
 		
-		console.log(color)
-		console.log(num)
+// 		console.log(color)
+// 		console.log(num)
 	});
 </script>
 <style>
@@ -71,18 +71,21 @@
 	/* 게시판 요소 정렬 */
 	#boardList li{
 		float: left;
-		width: 8%;
+		width: 6%;
 		height: 40px;
 		line-height: 40px;
 		border-bottom: 1px solid lightblue;
 	}
-	#boardList li:nth-child(6n+2){
+	#boardList li:nth-child(7n+2){
 		width: 50%;
 	}
 /* 	#boardList li:nth-child(5n+3){ */
 /* 		width: 12%; */
 /* 	} */
-	#boardList li:nth-child(6n+6){
+	#boardList li:nth-child(7n+4){
+		width: 10%;
+	}
+	#boardList li:nth-child(7n+6){
 		width: 15%;
 	}
 	.on{
@@ -124,6 +127,7 @@
 			<li>글쓴이</li>
 			<li>조회수</li>
 			<li>등록일</li>
+			<li>파일</li>
 			
 <%-- 											총 레코드 수 - ((현재 페이지-1)* 한 페이지 레코드 ) --%>
 			<c:set var="recordNum" value="${totalRecord - ((page.currentPageNum-1) * page.onePageRecord)}"/>
@@ -141,7 +145,7 @@
 <%-- 					<c:if test="${not empty page.searchKey}"><li>${recordNum}</li></c:if> --%>
 <%-- 				</c:if> --%>
 				
-				<li class="${vo.groupNo}">${recordNum}</li>
+				<li class="${vo.groupNo}" style="color:rgb(${vo.color});font-weight:bold;">${recordNum}</li>
 				
 <!-- 			// grouporder가 0이면 원글이니까 recordNum을 보여준다-->
 <%-- 				<c:if test="${vo.groupOrder == 0}"><li>${recordNum}</li></c:if> --%>
@@ -163,6 +167,7 @@
 				<li><c:out value="${vo.userid}"></c:out></li>
 				<li>${vo.hit}</li>
 				<li>${vo.writedate}</li>
+				<li> <c:if test="${vo.filename != null}">file</c:if></li>
 				<c:set var="recordNum" value="${recordNum-1}"/>
 			</c:forEach>	
 			

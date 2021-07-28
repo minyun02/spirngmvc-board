@@ -60,7 +60,7 @@
 			success : function(result){
 				if(result>0){//성공
 					replyList();
-					alert("댓글이 삭제되었습니다.");
+// 					alert("댓글이 삭제되었습니다.");
 				}else{
 					alert("댓글 삭제에 실패했습니다. 다시 시도해주세요.")
 				}
@@ -386,10 +386,17 @@
 		//에디터 불러오기
 		$("#content").summernote({
   			width : 1000,
-  			height : 500,
+//   			backcolor : #fff,
   			toolbar : []
   		});
 		$("#content").summernote('disable')
+		
+// 		$("#password").focus(function(){
+// 			$("#pwdRule").css("display",'block');
+// 		});
+// 		$("#password").blur(function(){
+// 			$("#pwdRule").css("display",'none');
+// 		});
 	})
 </script>
 <style type="text/css">
@@ -469,6 +476,13 @@
 	#pagingDiv{
 		margin-bottom: 100px;
 	}
+	#pwdRule{
+/*  		display: none; */
+	}
+	.note-editor.note-airframe .note-editing-area .note-editable[contenteditable=false], .note-editor.note-frame .note-editing-area .note-editable[contenteditable=false] {
+	    background-color: white; 
+	    min-height: 500px;
+	 }
 </style>
 </head>
 <body>
@@ -488,11 +502,15 @@
 			<textarea id="content" style="width: 1000px; height: 500px; border:1px solid; word-break:break-all; overflow: auto;"><c:if test="${vo.state eq '공개'}"><c:out value="${vo.content}"></c:out></c:if><c:if test="${vo.state eq '비공개'}">해당 글은 본문이 삭제되었습니다.</c:if></textarea>
 <%-- 			<c:out value="${vo.content}"></c:out> --%>
 			</li>
-			<li>다운로드 파일 : <br>
-				<c:forEach var="file" items="${file}" varStatus="idx">
-					<a href="/webapp/upload/${file}" download>${file}</a><br>
-				</c:forEach>
-			</li>
+			<c:if test="${vo.state eq '공개'}">
+				<c:if test="${vo.filename != null}">
+					<li>다운로드 파일 : <br>
+						<c:forEach var="file" items="${file}" varStatus="idx">
+							<a href="/webapp/upload/${file}" download>${file}</a><br>
+						</c:forEach>
+					</li>
+				</c:if>
+			</c:if>
 		</ul><br>
 		<c:if test="${vo.state eq '공개'}">
 			<a href="javascript:boardEdit()">수정</a>
@@ -506,6 +524,7 @@
 				<span id="useridWord">0/5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				비밀번호 : <input id="password" type="password" name="password" maxlength="10">
 				<span id="pwdWord">0/10</span>
+				<span id="pwdRule">&nbsp;&nbsp;문자, 숫자, 특수문자 조합 6-10자리로 설정해주세요.</span>
 				<textarea id="commentTextArea" name="content" rows="6" cols="130" maxlength="250"></textarea>
 				<input id="commentSubmit" type="submit" value="댓글작성">
 				<p id="contentWord">0/250</p>			

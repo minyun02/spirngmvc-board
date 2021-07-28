@@ -3,15 +3,15 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.boardtest.webapp.dao.BoardDAO">
 	<insert id="boardInsert" parameterType="com.boardtest.webapp.vo.BoardVO">
-		insert into boardprac(boardNo, subject, content, userid, password, groupNo, filename) 
-		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, testsq.currval, #{filename})
+		insert into boardprac(boardNo, subject, content, userid, password, groupNo, filename, color) 
+		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, testsq.currval, #{filename}, #{color})
 	</insert>
 	<select id="getList" parameterType="PageVO" resultType="BoardVO">
 		select * from
 		    (select * from
 		        (select * from 
 		            (select boardNo, subject, content, userid, hit, to_char(writedate, 'YYYY-MM-DD') writedate, 
-		            groupNo, groupOrder, indent, state from boardprac order by groupNo desc, groupOrder asc)
+		            groupNo, groupOrder, indent, state, filename, color from boardprac order by groupNo desc, groupOrder asc)
 		        <if test="searchKey != null and searchKey != '' and searchWord != null and searchWord != ''"> where ${searchKey} like '%${searchWord}%' and state='공개'</if>)
 		    where <![CDATA[rownum <=]]>${currentPageNum * onePageRecord} order by rownum desc)
 		where <![CDATA[rownum <=]]>
@@ -42,11 +42,11 @@
 		update boardprac set hit = hit+1 where boardNo=${param1}
 	</update>
 	<select id="getOriInfo" resultType="BoardVO">
-		select boardNo, groupNo, groupOrder, indent from boardprac where boardNo=${param1}
+		select boardNo, groupNo, groupOrder, indent, color from boardprac where boardNo=${param1}
 	</select>
 	<insert id="replyInsert" parameterType="BoardVO">
-		insert into boardprac(boardNo, subject, content, userid, password, groupNo, groupOrder, indent)
-		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, ${groupNo}, ${groupOrder}, ${indent})
+		insert into boardprac(boardNo, subject, content, userid, password, groupNo, groupOrder, indent, color, filename)
+		values(testsq.nextval, #{subject}, #{content}, #{userid}, #{password}, ${groupNo}, ${groupOrder}, ${indent}, #{color}, #{filename})
 	</insert>
 	<update id="indentCount" parameterType="BoardVO">
 		update boardprac set groupOrder=groupOrder+1 where groupNo=${groupNo} and groupOrder>${groupOrder}
@@ -92,9 +92,12 @@
 		</if>
 	</select>
 	<update id="boardStateChange">
-		update boardprac set state='비공개' where boardno=${param1}
+		update boardprac set state='비공개', subject='삭제된 글입니다.', content='해당 글은 본문이 삭제되었습니다.' where boardno=${param1}
 	</update>
 	<select id="getReplyCount" resultType="int">
 		select count(groupno) from boardprac where boardno = ${param1}
+	</select>
+	<select id="colorCheck" resultType="int">
+		select count(boardno) from boardprac where color=#{param1}
 	</select>
 </mapper>

@@ -371,6 +371,17 @@
 					<textarea name="content" id="content" required><c:out value="${vo.content}"></c:out></textarea>
 	<!-- 				<br><span id="contentCheck"></span> -->
 				</li>
+				<c:if test="${vo.state eq '공개'}">
+					<c:if test="${vo.filename != null}">
+						<li>첨부 파일 : <br>
+							<c:forEach var="file" items="${file}" varStatus="idx">
+								<div>${file}<a href="" style="margin-left:10px; font-weight: bold;">X</a></div>
+								<input type="hidden" name="" value="${vo.file}">
+								<input type="hidden" name="file">
+							</c:forEach>
+						</li>
+					</c:if>
+				</c:if>
 				<li>
 					<input type="submit" value="수정">
 	<!-- 				<input type="reset" value="reset"> -->
