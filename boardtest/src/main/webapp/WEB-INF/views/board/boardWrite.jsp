@@ -192,10 +192,17 @@
   			width : 1000
   		});
 		
+		
+// 		 $('#file').change(function(){
+// 	        $('#file').each(function(idx){
+// 	            var thisFile = $(this);
+// 	            var fileSize = thisFile[idx].files[idx].size;
+// 	            alert(fileSize);
+// 	        });
+// 	    });
+		
 	});
-	function test(){
-		alert("???")
-	}
+	
 </script>
 <style>
 	#subject{
@@ -232,7 +239,7 @@
 					<textarea name="content" id="content"></textarea>
 	<!-- 				<br><span id="contentCheck"></span> -->
 				</li>
-				<li><input id="file" type="file" multiple="multiple" name="file" onchange="test(this.form.file)"/></li>
+				<li><input id="file" type="file" multiple="multiple" name="file" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain, image/*, text/html, video/*, audio/*, .pdf"/></li>
 				<li>
 					<input type="submit" value="등록">
 	<!-- 				<input type="reset" value="reset"> -->
