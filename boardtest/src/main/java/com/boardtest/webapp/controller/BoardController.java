@@ -74,7 +74,6 @@ public class BoardController {
 	public ModelAndView boardWriteOk(BoardVO vo, HttpServletRequest req) {
 		//파일 저장 위치 잡아주기
 		String path = req.getSession().getServletContext().getRealPath("/upload");
-//		String path = "C:\\Users\\min\\git\\spirngmvc-board\\boardtest\\src\\main\\webapp\\upload";
 		//파일 업로드를 위해서 multiparthttp객체로 변환해준다
 		MultipartHttpServletRequest mr = (MultipartHttpServletRequest) req;
 		
@@ -171,12 +170,91 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value="/boardEditOk", method = RequestMethod.POST)
-	public ModelAndView boardEditOk(BoardVO vo) {
+	public ModelAndView boardEditOk(BoardVO vo, HttpServletRequest req) {
+		//파일 업로드 세팅
+		String path = req.getSession().getServletContext().getRealPath("/upload");
+		
+		MultipartHttpServletRequest mr = (MultipartHttpServletRequest)req;
+		
+		//안지우고 남은 원래 파일들
+		String remainFile[] = req.getParameterValues("remainFile");
+		
+		//새로 추가된 파일 업로드
+		List<MultipartFile> list = mr.getFiles("file");
+		List<String> newUpload = new ArrayList<String>();
+		
+		if(remainFile != null) {
+			for(int i=0; i<remainFile.length; i++) {
+				newUpload.add(remainFile[i]);
+			}
+		}
+		
+		if(list!= null && list.size() > 0) {
+			for(MultipartFile mf : list) {
+				if(mf != null) {
+					String oriName = mf.getOriginalFilename();
+					if(oriName != null && !oriName.equals("")) {
+						File ff = new File(path, oriName);
+						int i = 0;
+						while(ff.exists()) {
+							int point = oriName.lastIndexOf(".");
+							String filename = oriName.substring(0, point);
+							String extName = oriName.substring(point+1);
+							
+							ff = new File(path, filename+"("+ i++ +")." + extName);
+						}//while
+						
+						try {
+							mf.transferTo(ff);
+						}catch(Exception e) {
+							System.out.println(("글수정 파일업로드 실패"));
+							e.printStackTrace();
+						}
+						newUpload.add(ff.getName());
+						System.out.println(newUpload.size()+"---->새로 올라갈 파일 리스트 길이");
+					}//if
+				}//if
+			}//for
+		}//if
+		//DB에 남은 파일들 + 새로운 파일 이름 업데이트하기
+		if(!newUpload.isEmpty()) {
+			String filename = "";
+			for(int i=0; i<newUpload.size(); i++) {
+				filename = filename + newUpload.get(i)+"/";
+			}
+			vo.setFilename(filename);
+		}
+		
 		ModelAndView mav = new ModelAndView();
 		int updateResult = boardService.boardEdit(vo);
 		if(updateResult > 0) {
+			//삭제할 파일 처리하기
+			String delFile[] = req.getParameterValues("delFile");
+			if(delFile != null) {
+				for(String dFile : delFile) {
+					try {
+						File dFileObj = new File(path, dFile);
+						dFileObj.delete();
+					}catch(Exception e) {
+						System.out.println("삭제할 파일 처리 실패");
+						e.printStackTrace();
+					}
+				}
+			}
 			mav.setViewName("redirect:/");
 		}else {
+			//수정에 실패했으니까 새로 올린 파일들 다시 지우기
+			if(newUpload.size()>0) {
+				for(String newFile : newUpload) {
+					try {
+						File dFileObj = new File(path, newFile);
+						dFileObj.delete();
+					}catch(Exception e) {
+						System.out.println("새로 추가할 파일 실패!!");
+						e.printStackTrace();
+					}
+				}
+			}
 			mav.addObject("boardNo", vo.getBoardNo());
 			mav.setViewName("redirect:boardEdit");
 		}

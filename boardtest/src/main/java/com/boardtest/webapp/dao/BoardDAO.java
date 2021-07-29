@@ -32,5 +32,5 @@ public interface BoardDAO {
 	public int boardStateChange(int boardNo);
 	public int getReplyCount(int boardNo);
 	public int colorCheck(String rgb);
-	
+	public String getName(int boardNo);
 }

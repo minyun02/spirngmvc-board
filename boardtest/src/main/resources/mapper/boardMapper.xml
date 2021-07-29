@@ -33,7 +33,7 @@
 		select password from boardprac where boardNo=${param1}
 	</select>
 	<update id="boardEdit" parameterType="BoardVO">
-		update boardprac set subject=#{subject}, content=#{content}, userid=#{userid}, password=#{password} where boardNo=${boardNo}
+		update boardprac set subject=#{subject}, content=#{content}, userid=#{userid}, password=#{password}, filename=#{filename} where boardNo=${boardNo}
 	</update>
 	<delete id="boardDelete">
 		delete from boardprac where boardNo=${param1}
@@ -99,5 +99,8 @@
 	</select>
 	<select id="colorCheck" resultType="int">
 		select count(boardno) from boardprac where color=#{param1}
+	</select>
+	<select id="getName" resultType="String">
+		select filename from boardprac where boardno=${param1}
 	</select>
 </mapper>

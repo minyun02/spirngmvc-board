@@ -15,6 +15,16 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
 	$(function(){
+		//파일 삭제 버튼
+		$(".delBtn").click(function(){
+			if(confirm('해당 파일을 삭제하시겠습니까?')){
+				$(this).prev().attr('name', '');
+				$(this).parent().next().attr('name', 'delFile');
+				$(this).parent().css('display','none');
+			}
+		});
+		
+		
 		var subjectLength = "${vo.subject}";
 		var useridLength = "${vo.userid}";
 		var passwordLength = "${vo.password}";
@@ -30,12 +40,6 @@
 			checkblank(obj, '제목');
 			subjectWordCount(obj, wordcheck);
 		}
-		//복붙했을때
-// 		subject.oncut = subject.oncopy = subject.onpaste = function(){
-// 			var obj = $("#subject");
-// 			var wordcheck = $("#subjectWord");
-// 			subjectWordCount(obj, wordcheck);
-// 		}
 		//작성자 글자수 보여주기---------------
 		//눌릴때 보여주기
 		userid.oninput = function(){
@@ -44,41 +48,15 @@
 			checkblank(obj, '작성자')
 			subjectWordCount(obj, wordcheck);
 		}
-		//복붙할때
-// 		userid.oncut = userid.oncopy = userid.onpaste = function(){
-// 			var obj = $("#userid");
-// 			var wordcheck = $("#idWord");
-// 			checkblank(obj, '작성자')
-// 			subjectWordCount(obj, wordcheck);
-// 		}
-		//비밀번호 글자수 보여주기-------------
 		//키보드 입력시
 		password.oninput = function(e){
 			var obj = $("#password");
 			var wordcheck = $("#pwdWord");
 			var pwdAlert = $("#pwdAlert");
-// 			var myData = e.clipboardData.getData("text/plain").substr(0, obj.attr('maxlength'));
 			
 			checkblank(obj, '비밀번호')
 			subjectWordCount(obj, wordcheck);
-// 			pwdCheck(obj, pwdAlert, myData.length);
 		}
-		//복사 붙여넣기 할때
-// 		password.oncut = password.oncopy = password.onpaste = function(e){
-// 		password.onpaste = function(e){
-// 			var obj = $("#password");
-// 			var wordcheck = $("#pwdWord");
-// 			var pwdAlert = $("#pwdAlert");
-// 			var myData = e.clipboardData.getData("text/plain").substr(0, obj.attr('maxlength'));
-
-// 			console.log(myData);
-			
-// 			checkblank(obj, '비밀번호')
-// 			subjectWordCount(obj, wordcheck);
-// 			pwdCheck(obj, pwdAlert, myData.length);
-// 		}
-		
-		
 		
 		//글자수 보여주는 함수--------
 		function subjectWordCount(obj, wordcheck){
@@ -100,34 +78,20 @@
 			}
 		}
 		//비밀번호 유효성 검사 함수--------------
-// 		function pwdCheck(obj, pwdAlert, clipboard){
 		function pwdCheck(){
 			console.log(clipboard)
 			var pw = $("#password").val();
 			var check = password.value.match(/([a-zA-Z0-9].*[!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~].*[a-zA-Z0-9])/);
 				
 			if(pw.length == 0 || clipboard == 0){
-// 				pwdAlert.text("");
-// 				$("#pwdGo").css("display","none");
 				return false;
 			}else if(pw.search(/\s/) != -1){
-// 				checkblank(obj, '비밀번호');
-// 				$("#pwdGo").css("display","none");
 				return false;
 			}else if(pw.length < 6 || clipboard < 6){
-// 				pwdAlert.text("6자리 이상입력해주세요.");
-// 				alert("6자리 이상입력해주세요.");
-// 				$("#pwdGo").css("display","none");
 				return false;
 			}else if(!check){
-// 				pwdAlert.text("비밀번호는 문자, 숫자, 특수문자의 조합으로 6~10자리로 입력해주세요.");
 				alert("비밀번호는 문자, 숫자, 특수문자의 조합으로 6~10자리로 입력해주세요.");
 				$("#pwdGo").css("display","none");
-// 				if(pw.length >= 9 || clipboard >= 9){
-// 					setTimeout(function(){
-// 						alert("올바르지 않은 비밀번호입니다. 다시 확인해주세요");
-// 					}, 100);
-// 				}
 				return false;
 		    }else{
 		    	$("#pwdGo").css("display",'inline-block')
@@ -200,135 +164,6 @@
   			width : 1000
   		});
 		
-		
-// 		//글자수 제한
-// 		//제목 글자수 네비게이터
-// 		$("#subject").keyup(function(){
-// 			$("#subjectWord").text($("#subject").val().length+"/"+$(this).attr("maxlength"));
-// 			if($(this).val().length>$(this).attr("maxlength")){
-// 				alert($(this).attr("maxlength")+"글자까지 입력 가능합니다.")
-// 				$(this).val($(this).val().substr(0, $(this).attr("maxlength")));
-// 				$("#subjectWord").text("100/100");
-// 			}
-// 		});
-// 		$("#subject").click(function(){
-// 			$("#subjectWord").text($("#subject").val().length+"/"+$(this).attr("maxlength"));
-// 			if($(this).val().length>$(this).attr("maxlength")){
-// 				alert($(this).attr("maxlength")+"글자까지 입력 가능합니다.")
-// 				$(this).val($(this).val().substr(0, $(this).attr("maxlength")));
-// 				$("#subjectWord").text("100/100");
-// 			}
-// 		});
-		
-// 		//작성자 글자수 네비게이터
-// 		$("#userid").keyup(function(){
-// 			$("#idCheck").text($(this).val().length+"/"+$(this).attr("maxlength"));
-// 			if($(this).val().length>$(this).attr("maxlength")){
-// 				alert("작성자는 " + $(this).attr("maxlength")+"글자까지 입력 가능합니다.")
-// 				$(this).val($(this).val().substr(0, $(this).attr("maxlength")));
-// 				$("#idCheck").text("5/5");
-// 			}
-// 		});
-		
-// 		//비밀번호 조합 안내
-// 		$("#password").focus(function(){
-// // 			$("#pwdCheck").text("숫자, 영문, 특수문자를 혼합하여 6~10자리로 입력해주세요.");
-			
-// 		});
-		
-// 		$("#password").focusout(function(){
-// 			$("#pwdCheck").text("")
-// 		});
-		
-// 		//공백 입력시 알림창
-// 		//제목
-// 		$(document).on("blur", "#subject", function(){
-// 			if($(this).val().trim()==""){
-// 				$("#blankCheck").css("display", "block");
-// 				$(this).val("")
-// 				$("#subject").focus();
-// 			}else if($(this).val().trim()!=""){
-// 				$("#blankCheck").css("display", "none");
-// 			}
-// 		});
-// 		//작성자
-// 		$(document).on('blur','#userid', function(){
-// 			if($("#userid").val().trim()==""){
-// 				$("#blankCheckUserid").css("display", "block");
-// 				$(this).val("")
-// 				$("#userid").focus();
-// 			}else if($(this).val().trim()!=""){
-// 				$("#blankCheckUserid").css("display", "none");
-// 			}
-// 		})
-// 		//비밀번호
-// 		$(document).on('blur','#password',function(){
-// 			var pw = $("#password").val();
-// 			var num = pw.search(/[0-9]/g);
-// 			var eng = pw.search(/[a-z]/ig);
-// 			var spe = pw.search(/[~!@#$%^&*()_+-|<>?:;`,{}\]\[/\'\"\\\']/gi);
-			
-// 			if(pw.length < 6 || pw.length > 10){
-// 				$("#pwdCheck").text("6~10자리 이내로 입력해주세요.")
-// 				$("#password").focus();
-// 			}else if(pw.search(/\s/) != -1){
-// 				$("#pwdCheck").text("비밀번호는 공백 없이 입력해주세요.");
-// 				$("#password").focus();
-// 			}else if(num <0 || eng < 0 || spe < 0){
-// 				$("#pwdCheck").text("영문, 숫자, 특수문자를 혼합하여 입력해주세요.")
-// 				$("#password").focus();
-// 			}
-// // 			else{
-// // 				$("#pwdCheck").text("사용 가능한 비밀번호입니다.")
-// // 			}
-// 		})
-		
-// 		//유효성 검사
-// 		$("#writeForm").on("submit", ()=>{
-// 			//제목 공백 유효성
-// 			if($("#subject").val().trim()==""){
-// 				alert("제목을 입력하세요.")
-// 				$("#subject").focus();
-// 				return false;
-// 			}
-// 			//작성자 공백 유효성
-// 			if($("#userid").val().trim()==""){
-// 				alert("작성자를 입력하세요.")
-// 				$("#userid").focus();
-// 				return false;
-// 			}
-// 			//글 내용 유효성
-// 			var content = $($("#content").summernote("code")).text();
-			
-// 			if(content.trim()=="" || $("#content").summernote('isEmpty')){
-// 				alert("내용을 입력해주세요.")	
-// 				$('#content').summernote('focus');
-// 				return false;
-// 			}
-			
-// 			//비밀번호 유효성
-// 			var pw = $("#password").val();
-// 			var num = pw.search(/[0-9]/g);
-// 			var eng = pw.search(/[a-z]/ig);
-// 			var spe = pw.search(/[~!@#$%^&*()_+-|<>?:;`,{}\]\[/\'\"\\\']/gi);
-			
-// 			if(pw.length < 6 || pw.length > 10){
-// 				$("#pwdCheck").text("6~10자리 이내로 입력해주세요.")
-// 				$("#password").focus();
-// 				return false;
-// 			}else if(pw.search(/\s/) != -1){
-// 				$("#pwdCheck").text("비밀번호는 공백 없이 입력해주세요.");
-// 				$("#password").focus();
-// 				return false;
-// 			}else if(num <0 || eng < 0 || spe < 0){
-// 				$("#pwdCheck").text("영문, 숫자, 특수문자를 혼합하여 입력해주세요.")
-// 				$("#password").focus();
-// 				return false;
-// 			}else{
-// 				$("#pwdGo").css("display", 'block');
-// 				return true;
-// 			}
-// 		});	
 	});
 </script>
 <style>
@@ -345,6 +180,9 @@
 	#pwdGo{
 		color: green;
 		display: none;
+	}
+	input[name='remailFile']:focus{
+		outline: none;
 	}
 </style>
 </head>
@@ -375,17 +213,18 @@
 					<c:if test="${vo.filename != null}">
 						<li>첨부 파일 : <br>
 							<c:forEach var="file" items="${file}" varStatus="idx">
-								<div>${file}<a href="" style="margin-left:10px; font-weight: bold;">X</a></div>
-								<input type="hidden" name="" value="${vo.file}">
-								<input type="hidden" name="file">
+								<div>
+									<input type="text" value="${file}" name="remainFile" style="border:none;" readonly/>
+									<a class="delBtn" href="" onclick="return false;" style="margin-left:10px; font-weight: bold;">X</a><br>
+								</div>
+								<input type="hidden" name="" value="${file}">
 							</c:forEach>
 						</li>
 					</c:if>
+					<input type="file" multiple="multiple" name="file"/>
 				</c:if>
 				<li>
 					<input type="submit" value="수정">
-	<!-- 				<input type="reset" value="reset"> -->
-	<!-- 				<input id="cancelBtn" type="button" value="등록취소"> -->
 				</li>
 			</ul>
 		</form>

@@ -155,4 +155,10 @@ public class BoardServiceImp implements BoardService {
 		return dao.colorCheck(rgb);
 	}
 
+	@Override
+	public String getName(int boardNo) {
+		// 파일명 가져오기
+		return dao.getName(boardNo);
+	}
+
 }
