@@ -190,7 +190,7 @@
 	<div id="container">
 		<h1>글수정</h1>
 		<h3><a id="list" href="/webapp/">목록</a></h3>
-		<form action="boardEditOk" method="post" id="writeForm" name="myform">
+		<form action="boardEditOk" method="post" id="writeForm" name="myform" enctype="multipart/form-data">
 			<input type="hidden" name="boardNo" value="${vo.boardNo}">
 			<ul>
 				<li>제목 : <input id="subject" type="text" name="subject" maxlength="100" value="<c:out value="${vo.subject}"></c:out>" required >

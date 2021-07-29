@@ -173,6 +173,7 @@
 				$("#password").focus();
 				return false;
 			}
+			
 		});	
 		
 		//글 목록으로 돌아가기
@@ -190,7 +191,11 @@
   			height : 300,
   			width : 1000
   		});
+		
 	});
+	function test(){
+		alert("???")
+	}
 </script>
 <style>
 	#subject{
@@ -227,7 +232,7 @@
 					<textarea name="content" id="content"></textarea>
 	<!-- 				<br><span id="contentCheck"></span> -->
 				</li>
-				<li><input type="file" multiple="multiple" name="file"/></li>
+				<li><input id="file" type="file" multiple="multiple" name="file" onchange="test(this.form.file)"/></li>
 				<li>
 					<input type="submit" value="등록">
 	<!-- 				<input type="reset" value="reset"> -->
