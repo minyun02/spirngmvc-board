@@ -54,9 +54,11 @@ public class BoardController {
 		if(vo.getFilename() != null) {
 			//파일 이름을 나눠준다
 			StringTokenizer st = new StringTokenizer(vo.getFilename(), "/");
+			StringTokenizer ori = new StringTokenizer(vo.getOrifilename(), "/");
 			String path = req.getSession().getServletContext().getRealPath("/WEB-INF/upload");
 			System.out.println("path==>"+path);
 			mav.addObject("file", st);
+			mav.addObject("ori", ori);
 		}
 //		System.out.println(currentPage+"<--page");
 		mav.addObject("vo", vo);
@@ -81,7 +83,8 @@ public class BoardController {
 		List<MultipartFile> files = mr.getFiles("file");
 		
 		//올라간 파일 이름을 담을 리스트(db에 넣을용)
-		List<String> uploadToDB = new ArrayList<String>(); //for문 밖에서 선언
+		List<String> uploadToDB = new ArrayList<String>(); // 중복파일용
+		List<String> orifilename = new ArrayList<String>();
 		if(!files.isEmpty()) {//첨부 파일이 있으면
 			for(MultipartFile mf : files) { //파일수만큰 반복
 				String originalFilename = mf.getOriginalFilename(); //파일의 이름을 받아줄 변수
@@ -106,6 +109,7 @@ public class BoardController {
 					}
 					//원본파일 이름 혹은 중복으로 인해 변경된 파일명을 담아준다
 					uploadToDB.add(f.getName());//파일의 이름만 담아주면 된다.
+					orifilename.add(originalFilename); //원본 파일 이름을 담아준다.
 				}//if
 			}//for
 		}//if
@@ -113,10 +117,13 @@ public class BoardController {
 		//데이터베이스에 이름 넣어주기
 		//1. 여러개의 파일명을 하나의 String으로 만들어주어야한다
 		String filename = "";
+		String orifile = ""; //원본파일
 		for(int i=0; i<uploadToDB.size(); i++) {
 			filename = filename + uploadToDB.get(i)+"/";
+			orifile = orifile + orifilename.get(i)+"/";
 		}
 		vo.setFilename(filename);
+		vo.setOrifilename(orifile);
 		System.out.println(vo.getFilename()+"filename~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		//고유색 정해주기

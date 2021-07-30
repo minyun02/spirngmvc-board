@@ -506,7 +506,9 @@
 				<c:if test="${vo.filename != null}">
 					<li>다운로드 파일 : <br>
 						<c:forEach var="file" items="${file}" varStatus="idx">
-							<a href="/webapp/upload/${file}" download>${file}</a><br>
+							<c:forEach var="ori" items="${ori}">
+								<a href="/webapp/upload/${file}" download>${ori}</a><br>
+							</c:forEach>
 						</c:forEach>
 					</li>
 				</c:if>

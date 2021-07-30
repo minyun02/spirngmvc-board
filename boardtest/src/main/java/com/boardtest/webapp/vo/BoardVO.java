@@ -10,6 +10,7 @@ public class BoardVO {
 	private String filename;
 	private String writedate;
 	private String state;
+	private String orifilename;
 	
 	//답변
 	private int groupNo;
@@ -102,5 +103,11 @@ public class BoardVO {
 	}
 	public void setColor(String color) {
 		this.color = color;
+	}
+	public String getOrifilename() {
+		return orifilename;
+	}
+	public void setOrifilename(String orifilename) {
+		this.orifilename = orifilename;
 	}
 }
